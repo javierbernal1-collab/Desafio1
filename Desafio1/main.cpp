@@ -107,22 +107,24 @@ bool contieneFragmento(char *texto, int lenTexto, char *fragmento, int lenFrag) 
 
 // ---------------- MAIN ----------------
 int main() {
-    int nArchivos;
-    cout << "¿Cuántos archivos desea evaluar? ";
-    cin >> nArchivos;
+    int caso = 1;
 
-    for (int caso = 1; caso <= nArchivos; caso++) {
-        // Construir nombres de archivo
+    while (true) {
+        // Construir nombres de archivo (subir un nivel a dataset/)
         stringstream nombreEnc, nombrePista;
-        nombreEnc << "Encriptado" << caso << ".txt";
-        nombrePista << "pista" << caso << ".txt";
+        nombreEnc << "../dataset/Encriptado" << caso << ".txt";
+        nombrePista << "../dataset/pista" << caso << ".txt";
+
+        // Intentar abrir los archivos
+        ifstream fin(nombreEnc.str().c_str());
+        ifstream ffrag(nombrePista.str().c_str());
+
+        if (!fin || !ffrag) {
+            // Si alguno no existe, terminamos
+            break;
+        }
 
         // Leer archivo encriptado
-        ifstream fin(nombreEnc.str().c_str());
-        if (!fin) {
-            cout << "Error al abrir " << nombreEnc.str() << endl;
-            continue;
-        }
         string contenido;
         char c;
         while (fin.get(c)) {
@@ -137,12 +139,6 @@ int main() {
         }
 
         // Leer pista
-        ifstream ffrag(nombrePista.str().c_str());
-        if (!ffrag) {
-            cout << "Error al abrir " << nombrePista.str() << endl;
-            delete[] mensajeEncriptado;
-            continue;
-        }
         string fragStr;
         ffrag >> fragStr;
         ffrag.close();
@@ -206,6 +202,8 @@ int main() {
         delete[] buffer;
         delete[] salidaTexto;
         delete[] fragmento;
+
+        caso++; // Pasar al siguiente archivo
     }
 
     return 0;
